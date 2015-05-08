@@ -144,6 +144,25 @@ angular.module('googleplus', []).
           }
       };
 
+	  NgGooglePlus.prototype.getProfile = function() {
+          var deferred = $q.defer();
+
+	  	  gapi.client.load("oauth2", "v2", function() {
+		    gapi.client.oauth2.userinfo.get().execute(function(resp) {
+		      gapi.client.load("plus", "v1", function() {
+		        gapi.client.plus.people.get({
+		    	  'userId':resp.id
+		    	}).execute(function(profile) {
+		    	  deferred.resolve(profile);
+		    	  $rootScope.$apply();
+		    	});
+		      });
+			});
+		  });
+
+          return deferred.promise;
+      };
+
       NgGooglePlus.prototype.getUser = function() {
           var deferred = $q.defer();
 
